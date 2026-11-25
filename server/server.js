@@ -27,6 +27,16 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+// Connect to MongoDB before handling API requests
+app.use("/api", async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
 // API routes
 app.use("/api/events", eventRoutes);
 app.use("/api/clubs", clubRoutes);
@@ -52,13 +62,14 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
+// Local development server
 const startServer = async () => {
   try {
     await connectDB();
 
     app.listen(PORT, () => {
       console.log("Campus Events Hub Backend Started");
-      console.log(`Server: http://localhost:${PORT}`);
+      console.log(`Server running on port ${PORT}`);
     });
   } catch (error) {
     console.error("Failed to start server:", error.message);
@@ -66,6 +77,7 @@ const startServer = async () => {
   }
 };
 
+// Start server only during local development
 if (process.env.NODE_ENV !== "production") {
   startServer();
 }
