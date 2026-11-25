@@ -50,7 +50,6 @@ app.get("/", (req, res) => {
 app.use(notFound);
 app.use(errorHandler);
 
-// Start server after database connection
 const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
@@ -60,7 +59,6 @@ const startServer = async () => {
     app.listen(PORT, () => {
       console.log("Campus Events Hub Backend Started");
       console.log(`Server: http://localhost:${PORT}`);
-      console.log(`Health: http://localhost:${PORT}/api/health`);
     });
   } catch (error) {
     console.error("Failed to start server:", error.message);
@@ -68,4 +66,8 @@ const startServer = async () => {
   }
 };
 
-startServer();
+if (process.env.NODE_ENV !== "production") {
+  startServer();
+}
+
+export default app;
